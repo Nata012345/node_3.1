@@ -75,6 +75,11 @@ filmsRouter.post('/films/delete', (req, res) => {
     const { id } = req.query;
     if (id > 0 && id < movies.length) {
         movies.splice(id - 1, 1);
+        let i = 0;
+        movies.map(item => {
+             i = i + 1;
+             item.id = i;
+        });
         writeFile(fileToPath, movies);
         return res.status(200).send('Delete successfully');
     } else {
@@ -83,19 +88,18 @@ filmsRouter.post('/films/delete', (req, res) => {
 })
 filmsRouter.post('/films/create', (req, res) => {
     const { body } = req;
-    const newFilm = {
-        id : movies.length + 1,
-        title : body.title,
-        rating : body.rating,
-        year : body.year,
-        budget : body.budget,
-        poster : body.poster,
-        position : body.position
-    }
-    movies.push(newFilm);
-    writeFile(fileToPath, movies);
-    // fs.writeFile(fileToPath, JSON.stringify(movies, null, 4), () => {});
-    res.status(200).send(`Added new movie: ${newFilm}`);
+        const newFilm = {
+            id : movies.length + 1,
+            title : body.title,
+            rating : body.rating,
+            year : body.year,
+            budget : body.budget,
+            poster : body.poster,
+            position : body.position
+        };
+        movies.push(newFilm);
+        writeFile(fileToPath, movies);
+        return res.status(200).send(`Added new movie`);
 })
 module.exports = {
     filmsRouter
