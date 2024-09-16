@@ -86,20 +86,43 @@ filmsRouter.post('/films/delete', (req, res) => {
         return res.status(404).send('Film not found');
     }
 })
+function validatePostDataObject(body){
+    let rez = ''
+    let q = [
+        "title",
+        "rating",
+        "year",
+        "budget",
+        "poster",
+        "position",
+    ]
+    q.forEach(field => {
+        if (!body.hasOwnProperty(field)) {
+            rez = `Request does not have a ${field} field`
+        }
+    })
+    return rez;
+}
 filmsRouter.post('/films/create', (req, res) => {
     const { body } = req;
-        const newFilm = {
-            id : movies.length + 1,
-            title : body.title,
-            rating : body.rating,
-            year : body.year,
-            budget : body.budget,
-            poster : body.poster,
-            position : body.position
-        };
-        movies.push(newFilm);
-        writeFile(fileToPath, movies);
-        return res.status(200).send(`Added new movie`);
+        let validationError = validatePostDataObject(body)
+        if (!validationError) {
+            const newFilm = {
+                id : movies.length + 1,
+                title : body.title,
+                rating : body.rating,
+                year : body.year,
+                budget : body.budget,
+                poster : body.poster,
+                position : body.position
+            };
+            movies.push(newFilm);
+            writeFile(fileToPath, movies);
+            return res.status(200).send(`Added new movie`);
+
+        } else {
+            return res.status(500).send(validationError)
+        }
 })
 module.exports = {
     filmsRouter
