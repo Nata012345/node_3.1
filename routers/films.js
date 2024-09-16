@@ -71,7 +71,7 @@ filmsRouter.post('/films/update', (req, res) => {
         return res.status(200).send(filmById);
     }
 })
-filmsRouter.post('/films/delete', (req, res) => {
+filmsRouter.delete('/films/delete', (req, res) => {
     const { id } = req.query;
     if (id > 0 && id < movies.length) {
         movies.splice(id - 1, 1);
@@ -118,10 +118,10 @@ filmsRouter.post('/films/create', (req, res) => {
             };
             movies.push(newFilm);
             writeFile(fileToPath, movies);
-            return res.status(200).send(`Added new movie`);
+            return res.status(201).send(`Added new movie`);
 
         } else {
-            return res.status(500).send(validationError)
+            return res.status(400).send(validationError)
         }
 })
 module.exports = {
